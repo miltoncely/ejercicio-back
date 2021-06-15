@@ -96,7 +96,7 @@ public class RecursoImagenes {
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 
-    @ApiOperation("Actualiza la imagen")
+    @ApiOperation("Elimina la imagen")
     @ApiResponses({
             @ApiResponse(code = 200, message = "ok"),
             @ApiResponse(code = 404, message = "No se encuentra en la base de datos")
