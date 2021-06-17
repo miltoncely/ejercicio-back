@@ -6,7 +6,6 @@ import com.example.pragma.servicioclientes.domain.usecase.GestionarClientesInter
 import com.example.pragma.servicioclientes.infrastructure.entrypoints.dtos.ClientePeticion;
 import com.example.pragma.servicioclientes.infrastructure.entrypoints.dtos.ClienteRespuesta;
 import com.example.pragma.servicioclientes.infrastructure.exception.ApiException;
-import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -17,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -67,8 +67,10 @@ public class RecursoClientes {
     })
     @PostMapping
     public ResponseEntity<ClienteRespuesta> guardarCliente(
+            @Valid
             @ApiParam(value = "cliente en formato Json", required = true)
-            @RequestBody ClientePeticion clientePeticion) {
+            @RequestBody ClientePeticion clientePeticion
+            ) {
         if (existeElCliente(clientePeticion)) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "El cliente ya existe");
         }
@@ -91,10 +93,6 @@ public class RecursoClientes {
         Cliente cliente = mapeadorDto.aModelo(clientePeticion);
         Cliente imagenActualizada = gestionarClientes.actualizarCliente(cliente);
         ClienteRespuesta respuesta = mapeadorDto.aRespuesta(imagenActualizada);
-
-        if (imagenActualizada == null) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 
@@ -115,10 +113,11 @@ public class RecursoClientes {
         return ResponseEntity.ok().build();
     }
 
-    private Boolean existeElCliente(@NonNull ClientePeticion clientePeticion) {
+    private Boolean existeElCliente(ClientePeticion clientePeticion) {
+        Cliente cliente = mapeadorDto.aModelo(clientePeticion);
         Cliente clienteExistente = gestionarClientes.consultarCliente(
-                clientePeticion.getTipoDeDocumento(),
-                clientePeticion.getNumeroDeIdentificacion());
+                cliente.getTipoDeDocumento(),
+                cliente.getNumeroDeIdentificacion());
         if (clienteExistente != null) {
             return Boolean.TRUE;
         }

@@ -1,7 +1,6 @@
 package com.example.pragma.servicioclientes.infrastructure.adapters.imagenes;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 

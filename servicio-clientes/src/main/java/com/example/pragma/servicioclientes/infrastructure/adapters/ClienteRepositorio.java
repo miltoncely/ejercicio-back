@@ -53,8 +53,17 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
                 .numeroDeIdentificacion(numeroIdentificacion)
                 .build();
 
-        ClienteEntidad clienteEncontrado = clienteMysql.findById(idCliente).orElse(null);
-        return mapeador.aModelo(clienteEncontrado);
+        Optional<ClienteEntidad> clienteBD = clienteMysql.findById(idCliente);
+        Cliente clienteEncontrado =  null;
+        if(!clienteBD.isPresent()){
+            throw new ApiException(HttpStatus.NOT_FOUND,"El cliente no existe en la bd");
+        }else {
+            ImagenDto imagen = imagenesAdapter.consultarImagen(clienteBD.get().getIdFoto());
+            clienteEncontrado = mapeador.aModelo(clienteBD.get());
+            clienteEncontrado.setFoto(mapeadorImagenes.AModelo(imagen));
+
+        }
+        return clienteEncontrado;
     }
 
     @Override
@@ -75,7 +84,7 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
             cliente.setFoto(imagenActualizada);
             clienteMysql.save(mapeador.aPersistencia(cliente));
         }
-        return mapeador.aModelo(clienteMysql.getById(idCliente));
+        return cliente;
     }
 
     @Override
@@ -91,7 +100,6 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
                 clienteActual.setFoto(imagen);
             }
         }
-
         return clientesModelo;
     }
 

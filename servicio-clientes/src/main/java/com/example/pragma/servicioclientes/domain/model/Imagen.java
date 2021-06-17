@@ -1,6 +1,5 @@
 package com.example.pragma.servicioclientes.domain.model;
 
-import com.example.pragma.servicioclientes.infrastructure.entrypoints.dtos.ClientePeticion;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
