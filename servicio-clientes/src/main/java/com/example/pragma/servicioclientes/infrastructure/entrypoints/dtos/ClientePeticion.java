@@ -1,19 +1,13 @@
 package com.example.pragma.servicioclientes.infrastructure.entrypoints.dtos;
 
-import com.example.pragma.servicioclientes.application.config.messages.MessageConfiguration;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 import java.io.Serializable;
 
 @Data

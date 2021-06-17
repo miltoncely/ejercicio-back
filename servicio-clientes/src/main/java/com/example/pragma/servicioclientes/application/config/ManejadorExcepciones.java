@@ -2,7 +2,8 @@ package com.example.pragma.servicioclientes.application.config;
 
 import com.example.pragma.servicioclientes.infrastructure.exception.ApiExcepcion;
 import com.example.pragma.servicioclientes.infrastructure.exception.ApiException;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,8 +18,13 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.pragma.servicioclientes.application.config.messages.constants.ApiErrorResponses.SERVICIO_NO_DISPONIBLE;
+
 @ControllerAdvice
 public class ManejadorExcepciones {
+
+    @Autowired
+    private MessageSource messageSource;
 
     @ExceptionHandler(value = {
             HttpClientErrorException.class
@@ -79,7 +85,7 @@ public class ManejadorExcepciones {
     public ResponseEntity<Object> handleMethodArgumentNotValidException(ConnectException e){
         HttpStatus httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
         ApiExcepcion apiException = ApiExcepcion.builder()
-                .causas(List.of("Servicio no disponible"))
+                .causas(List.of(SERVICIO_NO_DISPONIBLE))
                 .estatus(httpStatus.value())
                 .httpError(httpStatus)
                 .timestamp(ZonedDateTime.now())

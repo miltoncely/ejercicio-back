@@ -10,9 +10,7 @@ import com.example.pragma.servicioclientes.infrastructure.adapters.imagenes.Imag
 import com.example.pragma.servicioclientes.infrastructure.adapters.mysql.ClienteEntidad;
 import com.example.pragma.servicioclientes.infrastructure.adapters.mysql.ClienteMysql;
 import com.example.pragma.servicioclientes.infrastructure.adapters.mysql.ClientePk;
-import com.example.pragma.servicioclientes.infrastructure.exception.ApiException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,7 +37,6 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
             cliente.setFoto(imagen);
         }
 
-
         ClienteEntidad clienteAGuardar = mapeador.aPersistencia(cliente);
         ClienteEntidad clienteBD = clienteMysql.save(clienteAGuardar);
         clienteBD.setImagen(imagen);
@@ -55,9 +52,7 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
 
         Optional<ClienteEntidad> clienteBD = clienteMysql.findById(idCliente);
         Cliente clienteEncontrado =  null;
-        if(!clienteBD.isPresent()){
-            throw new ApiException(HttpStatus.NOT_FOUND,"El cliente no existe en la bd");
-        }else {
+        if(clienteBD.isPresent()){
             ImagenDto imagen = imagenesAdapter.consultarImagen(clienteBD.get().getIdFoto());
             clienteEncontrado = mapeador.aModelo(clienteBD.get());
             clienteEncontrado.setFoto(mapeadorImagenes.AModelo(imagen));
@@ -74,9 +69,7 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
                 .build();
 
         Optional<ClienteEntidad> clienteExistente = clienteMysql.findById(idCliente);
-        if(!clienteExistente.isPresent()){
-            throw new ApiException(HttpStatus.NOT_FOUND,"El cliente no existe en la bd");
-        }else {
+        if(clienteExistente.isPresent()){
             Imagen imagenActualizada = actualizarImagen(
                     clienteExistente.get().getIdFoto(),
                     cliente.getFoto().getContenido()
@@ -110,9 +103,7 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
                 .numeroDeIdentificacion(numeroIdentificacion)
                 .build();
         Optional<ClienteEntidad> clienteExistente = clienteMysql.findById(idCliente);
-        if(!clienteExistente.isPresent()){
-            throw new ApiException(HttpStatus.NOT_FOUND,"El cliente no existe en la bd");
-        }else {
+        if(clienteExistente.isPresent()){
             imagenesAdapter.eliminarImagen(clienteExistente.get().getIdFoto());
             clienteMysql.delete(clienteExistente.get());
         }
