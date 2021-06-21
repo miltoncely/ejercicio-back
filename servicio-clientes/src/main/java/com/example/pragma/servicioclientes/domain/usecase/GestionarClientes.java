@@ -4,11 +4,13 @@ import com.example.pragma.servicioclientes.domain.gateway.EnlaceModeloInterface;
 import com.example.pragma.servicioclientes.domain.model.Cliente;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class GestionarClientes implements GestionarClientesInterface{
 
     private final EnlaceModeloInterface clienteRepositorio;
@@ -19,6 +21,7 @@ public class GestionarClientes implements GestionarClientesInterface{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Cliente consultarCliente(String tipoDocumento, String numeroIdentificacion) {
         return clienteRepositorio.consultarCliente(tipoDocumento,numeroIdentificacion);
     }
@@ -29,6 +32,7 @@ public class GestionarClientes implements GestionarClientesInterface{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Cliente> listarClientes() {
         return clienteRepositorio.listarClientes();
     }
@@ -36,5 +40,11 @@ public class GestionarClientes implements GestionarClientesInterface{
     @Override
     public void eliminarCliente(String tipoDocumento, String numeroIdentificacion) {
         clienteRepositorio.eliminarCliente(tipoDocumento,numeroIdentificacion);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Cliente> listarClientesPorEdad(Integer edad) {
+        return clienteRepositorio.listarClientesPorEdad(edad);
     }
 }

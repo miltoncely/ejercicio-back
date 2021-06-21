@@ -11,4 +11,6 @@ public interface EnlaceModeloInterface {
 
     List<Cliente> listarClientes();
     void eliminarCliente(String tipoDocumento,String numeroIdentificacion);
+
+    List<Cliente> listarClientesPorEdad(Integer edad);
 }

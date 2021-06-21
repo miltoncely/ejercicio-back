@@ -16,6 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ClientePeticion implements Serializable {
     public interface Atributos {
+        String TIPO_DOCUMENTO = "tipoDeDocumento";
         String CONTENIDO_FOTO = "foto";
     }
 

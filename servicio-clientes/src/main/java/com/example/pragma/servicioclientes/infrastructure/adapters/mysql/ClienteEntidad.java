@@ -27,7 +27,7 @@ public class ClienteEntidad {
     private ClientePk id;
     private String nombres;
     private String apellidos;
-    private String edad;
+    private Integer edad;
     private String ciudadDeNacimiento;
     private String idFoto;
 

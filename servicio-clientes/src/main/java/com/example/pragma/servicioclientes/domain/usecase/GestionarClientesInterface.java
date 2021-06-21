@@ -11,4 +11,6 @@ public interface GestionarClientesInterface {
 
     List<Cliente> listarClientes();
     void eliminarCliente(String tipoDocumento,String numeroIdentificacion);
+
+    List<Cliente> listarClientesPorEdad(Integer edad);
 }

@@ -6,8 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
-public class ClienteRespuesta {
+public class ClienteRespuesta implements Serializable {
     public interface Atributos{
         String TIPO_DOCUMENTO= "tipoDeDocumento";
         String NUMERO_IDENTIFICACION= "numeroDeIdentificacion";

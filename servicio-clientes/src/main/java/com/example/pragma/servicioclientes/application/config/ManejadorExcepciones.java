@@ -11,6 +11,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.net.ConnectException;
@@ -82,15 +84,16 @@ public class ManejadorExcepciones {
     @ExceptionHandler(value = {
             ConnectException.class
     })
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(ConnectException e){
+    @ResponseBody
+    @ResponseStatus(code = HttpStatus.SERVICE_UNAVAILABLE)
+    public ApiExcepcion handleMethodArgumentNotValidException(ConnectException e){
         HttpStatus httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
         ApiExcepcion apiException = ApiExcepcion.builder()
-                .causas(List.of(SERVICIO_NO_DISPONIBLE))
+                .causas(List.of(messageSource.getMessage(SERVICIO_NO_DISPONIBLE,null,null)))
                 .estatus(httpStatus.value())
                 .httpError(httpStatus)
                 .timestamp(ZonedDateTime.now())
                 .build();
-
-        return new ResponseEntity<>(apiException,httpStatus);
+        return apiException;
     }
 }

@@ -109,6 +109,23 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
         }
     }
 
+    @Override
+    public List<Cliente> listarClientesPorEdad(Integer edad) {
+        List<ClienteEntidad> clientes =  clienteMysql.findByEdadGreaterThanEqual(edad);
+
+        List<Cliente> clientesModelo = mapeador.aModelos(clientes);
+
+        for (Cliente clienteActual: clientesModelo) {
+            Imagen foto = clienteActual.getFoto();
+            if(foto != null && foto.getId() != null && !foto.getId().isEmpty()){
+                ImagenDto imagenBD = imagenesAdapter.consultarImagen(clienteActual.getFoto().getId());
+                Imagen imagen = mapeadorImagenes.AModelo(imagenBD);
+                clienteActual.setFoto(imagen);
+            }
+        }
+        return clientesModelo;
+    }
+
     private Imagen actualizarImagen(String id, String contenido){
         Imagen imagenActualizada = Imagen.builder()
                 .id(id)

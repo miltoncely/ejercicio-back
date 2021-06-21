@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -28,14 +29,11 @@ import static com.example.pragma.servicioclientes.application.config.messages.co
 @RequiredArgsConstructor
 public class RecursoClientes {
 
-    @Autowired
-    private GestionarClientesInterface gestionarClientes;
+    private final GestionarClientesInterface gestionarClientes;
 
-    @Autowired
-    private MapeadorDtoModelo mapeadorDto;
+    private final MapeadorDtoModelo mapeadorDto;
 
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     @ApiOperation("Colsultar el cliente por identificacion")
     @ApiResponses({
@@ -43,7 +41,8 @@ public class RecursoClientes {
             @ApiResponse(code = 204, message = "No hay contenido para mostrar")
     })
     @GetMapping("/{tipoIdentificacion}/{numeroIdentificacion}")
-    public ResponseEntity<ClienteRespuesta> consultarCliente(
+    @ResponseStatus(HttpStatus.OK)
+    public ClienteRespuesta consultarCliente(
             @ApiParam(value = "tipo de identificacion del cliente", required = true)
             @PathVariable String tipoIdentificacion,
             @ApiParam(value = "Identificador del cliente", required = true)
@@ -56,20 +55,23 @@ public class RecursoClientes {
                     messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, null)
             );
         }
-        return ResponseEntity.ok(mapeadorDto.aRespuesta(clienteBD));
+        return mapeadorDto.aRespuesta(clienteBD);
     }
 
     @ApiOperation("Lista todos los clientes")
     @ApiResponses({
             @ApiResponse(code = 200, message = "ok"),
             @ApiResponse(code = 204, message = "No hay contenido para mostrar")})
-    @GetMapping
-    public ResponseEntity<List<ClienteRespuesta>> listarClientes() {
+    @GetMapping @ResponseStatus(HttpStatus.OK)
+    public List<ClienteRespuesta> listarClientes() {
         List<Cliente> clientesBD = gestionarClientes.listarClientes();
         if (clientesBD.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            throw new ApiException(
+                    HttpStatus.NO_CONTENT,
+                    messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, null)
+            );
         }
-        return ResponseEntity.ok(mapeadorDto.aRespuestas(clientesBD));
+        return mapeadorDto.aRespuestas(clientesBD);
     }
 
     @ApiOperation("Guardar cliente")
@@ -77,12 +79,12 @@ public class RecursoClientes {
             @ApiResponse(code = 201, message = "El cliente fue creado en la bd"),
             @ApiResponse(code = 400, message = "El cliente ya esta registrado en la bd")
     })
-    @PostMapping
-    public ResponseEntity<ClienteRespuesta> guardarCliente(
+    @PostMapping @ResponseStatus(HttpStatus.CREATED)
+    public ClienteRespuesta guardarCliente(
             @Valid
             @ApiParam(value = "cliente en formato Json", required = true)
-            @RequestBody ClientePeticion clientePeticion
-    ) {
+            @RequestBody ClientePeticion clientePeticion ){
+
         if (existeElCliente(clientePeticion)) {
             throw new ApiException(
                     HttpStatus.BAD_REQUEST,
@@ -92,7 +94,7 @@ public class RecursoClientes {
         Cliente cliente = mapeadorDto.aModelo(clientePeticion);
         Cliente clienteCreado = gestionarClientes.guardarCliente(cliente);
         ClienteRespuesta respuesta = mapeadorDto.aRespuesta(clienteCreado);
-        return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
+        return respuesta;
     }
 
     @ApiOperation("Actualiza el cliente")
@@ -100,21 +102,21 @@ public class RecursoClientes {
             @ApiResponse(code = 200, message = "ok"),
             @ApiResponse(code = 404, message = "La cliente no esta registrado")
     })
-    @PutMapping
-    public ResponseEntity<ClienteRespuesta> actualizarCliente(
+    @PutMapping @ResponseStatus(HttpStatus.OK)
+    public ClienteRespuesta actualizarCliente(
             @ApiParam(value = "Cliente en formato Json", required = true)
             @RequestBody ClientePeticion clientePeticion) {
-
-        Cliente cliente = mapeadorDto.aModelo(clientePeticion);
 
         if (!existeElCliente(clientePeticion)) {
             throw new ApiException(
                     HttpStatus.NOT_FOUND,
-                    messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, null));
+                    CLIENTE_NO_ENCONTRADO);
+                    //messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, null));
         }
-        Cliente imagenActualizada = gestionarClientes.actualizarCliente(cliente);
-        ClienteRespuesta respuesta = mapeadorDto.aRespuesta(imagenActualizada);
-        return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+        Cliente cliente = mapeadorDto.aModelo(clientePeticion);
+        Cliente clienteActualizado = gestionarClientes.actualizarCliente(cliente);
+        ClienteRespuesta respuesta = mapeadorDto.aRespuesta(clienteActualizado);
+        return respuesta;
     }
 
 
@@ -124,12 +126,12 @@ public class RecursoClientes {
             @ApiResponse(code = 404, message = "No se encuentra en la base de datos")
     })
     @DeleteMapping("/{tipo}/{identificacion}")
-    public ResponseEntity eliminarCliente(
+    @ResponseStatus(HttpStatus.OK)
+    public void eliminarCliente(
             @ApiParam(value = "tipo de identificacion del cliente", required = true)
             @PathVariable String tipo,
             @ApiParam(value = "Identificador del cliente", required = true)
             @PathVariable String identificacion) {
-
         Cliente clienteExistente = gestionarClientes.consultarCliente(
                 tipo,
                 identificacion);
@@ -139,7 +141,20 @@ public class RecursoClientes {
                     messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, null));
         }
         gestionarClientes.eliminarCliente(tipo, identificacion);
-        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/edad/{edad}")
+    public List<ClienteRespuesta> listarClientesPorEdad(
+            @PathVariable Integer edad
+    ){
+        List<Cliente> clientesBD = gestionarClientes.listarClientesPorEdad(edad);
+        if (clientesBD.isEmpty()) {
+            throw new ApiException(
+                    HttpStatus.NO_CONTENT,
+                    messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, null)
+            );
+        }
+        return  mapeadorDto.aRespuestas(clientesBD);
     }
 
     private Boolean existeElCliente(ClientePeticion clientePeticion) {
