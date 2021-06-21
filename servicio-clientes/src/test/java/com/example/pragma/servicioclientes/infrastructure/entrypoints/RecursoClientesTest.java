@@ -2,7 +2,6 @@ package com.example.pragma.servicioclientes.infrastructure.entrypoints;
 
 import com.example.pragma.servicioclientes.application.mappers.MapeadorDtoModelo;
 import com.example.pragma.servicioclientes.domain.usecase.GestionarClientes;
-import com.example.pragma.servicioclientes.infrastructure.entrypoints.dtos.ClientePeticion;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,11 +15,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static com.example.pragma.servicioclientes.infrastructure.helpers.DatosTest.*;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.*;
-
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @WebMvcTest(RecursoClientes.class)
 class RecursoClientesTest {
@@ -97,7 +96,7 @@ class RecursoClientesTest {
 
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*",hasSize(2)))
+                .andExpect(jsonPath("$.*", hasSize(2)))
                 .andDo(print());
     }
 
@@ -113,16 +112,16 @@ class RecursoClientesTest {
 
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*",hasSize(3)))
+                .andExpect(jsonPath("$.*", hasSize(3)))
                 .andDo(print());
     }
 
     @Test
     void testActualizarCliente() throws Exception {
         //given
-        when(gestionarClientes.consultarCliente("CC", "1000000001")).thenReturn(getClienteGuardar());
+        when(gestionarClientes.consultarCliente("CC", "1000000001")).thenReturn(null);
         when(mapeadorDto.aModelo(getClientePeticionGuardar())).thenReturn(getClienteGuardar());
-        when(gestionarClientes.guardarCliente(getClienteGuardar())).thenReturn(getClienteGuardar());
+        when(gestionarClientes.actualizarCliente(getClienteGuardar())).thenReturn(getClienteGuardar());
         when(mapeadorDto.aRespuesta(getClienteGuardar())).thenReturn(getClienteRespuestaGuardar());
 
         //when

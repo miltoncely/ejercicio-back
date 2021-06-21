@@ -60,7 +60,7 @@ public class RecursoClientes {
 
     @ApiOperation("Lista todos los clientes")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "ok"),
+            @ApiResponse(code = 200, message = "ok",response = List.class),
             @ApiResponse(code = 204, message = "No hay contenido para mostrar")})
     @GetMapping @ResponseStatus(HttpStatus.OK)
     public List<ClienteRespuesta> listarClientes() {
@@ -110,8 +110,8 @@ public class RecursoClientes {
         if (!existeElCliente(clientePeticion)) {
             throw new ApiException(
                     HttpStatus.NOT_FOUND,
-                    CLIENTE_NO_ENCONTRADO);
-                    //messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, null));
+                    //CLIENTE_NO_ENCONTRADO);
+                    messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, null));
         }
         Cliente cliente = mapeadorDto.aModelo(clientePeticion);
         Cliente clienteActualizado = gestionarClientes.actualizarCliente(cliente);
