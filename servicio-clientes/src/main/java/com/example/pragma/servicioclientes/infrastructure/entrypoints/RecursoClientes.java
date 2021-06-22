@@ -10,19 +10,16 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.example.pragma.servicioclientes.application.config.messages.constants.ApiErrorResponses.CLIENTE_NO_ENCONTRADO;
-import static com.example.pragma.servicioclientes.application.config.messages.constants.ApiErrorResponses.CLIENTE_YA_EXISTE;
+import static com.example.pragma.servicioclientes.application.config.messages.constants.ApiErrorResponses.*;
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 
 @RestController
 @RequestMapping("/clientes")
@@ -68,7 +65,7 @@ public class RecursoClientes {
         if (clientesBD.isEmpty()) {
             throw new ApiException(
                     HttpStatus.NO_CONTENT,
-                    messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, null)
+                    messageSource.getMessage(CLIENTE_NO_HAY_REGISTROS, null, null)
             );
         }
         return mapeadorDto.aRespuestas(clientesBD);
@@ -106,12 +103,10 @@ public class RecursoClientes {
     public ClienteRespuesta actualizarCliente(
             @ApiParam(value = "Cliente en formato Json", required = true)
             @RequestBody ClientePeticion clientePeticion) {
-
         if (!existeElCliente(clientePeticion)) {
             throw new ApiException(
                     HttpStatus.NOT_FOUND,
-                    //CLIENTE_NO_ENCONTRADO);
-                    messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, null));
+                    messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, getLocale()));
         }
         Cliente cliente = mapeadorDto.aModelo(clientePeticion);
         Cliente clienteActualizado = gestionarClientes.actualizarCliente(cliente);
@@ -151,7 +146,7 @@ public class RecursoClientes {
         if (clientesBD.isEmpty()) {
             throw new ApiException(
                     HttpStatus.NO_CONTENT,
-                    messageSource.getMessage(CLIENTE_NO_ENCONTRADO, null, null)
+                    messageSource.getMessage(CLIENTE_NO_HAY_REGISTROS, null, null)
             );
         }
         return  mapeadorDto.aRespuestas(clientesBD);

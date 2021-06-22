@@ -62,6 +62,34 @@ public class DatosTest {
                 .build();
     }
 
+    public static ClientePeticion getClientePeticionEliminar() {
+        return ClientePeticion.builder()
+                .tipoDeDocumento("CC")
+                .numeroDeIdentificacion(1000000001L)
+                .nombres("Milton Alexander")
+                .apellidos("Cely Carrasca")
+                .build();
+    }
+
+    public static Cliente getClienteEliminar() {
+        return Cliente.builder()
+                .tipoDeDocumento("CC")
+                .numeroDeIdentificacion("1000000001")
+                .nombres("Milton Alexander")
+                .apellidos("Cely Carrasca")
+                .build();
+
+    }
+
+    public static ClienteRespuesta getClienteRespuestaEliminar(){
+        return ClienteRespuesta.builder()
+                .tipoDeDocumento("CC")
+                .numeroDeIdentificacion("1000000001")
+                .nombres("Milton Alexander")
+                .apellidos("Cely Carrasca")
+                .build();
+    }
+
     public static List<Cliente> getClientesConsultadosPorEdad(){
 
         Cliente cliente1 = Cliente.builder()
