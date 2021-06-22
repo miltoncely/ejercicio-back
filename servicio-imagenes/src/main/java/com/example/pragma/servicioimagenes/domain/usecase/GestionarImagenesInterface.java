@@ -7,6 +7,7 @@ import java.util.List;
 public interface GestionarImagenesInterface {
     Imagen guardarImagen(Imagen imagen);
     Imagen consultarImagen(String identificacion);
+    List<Imagen> consultarImagenes(List<String> identificaciones);
     Imagen actualizarContenido(String identificacion,Imagen imagen);
     List<Imagen> listarImagenes();
     void eliminarImagen(String identificador);

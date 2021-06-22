@@ -5,6 +5,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -22,6 +23,20 @@ public class ImagenesAdapter {
                 messageSource.getMessage(MICRO_IMAGENES_URI, null, null) + imagenId,
                 ImagenDto.class);
         return imagen;
+    }
+
+    public Map<String, ImagenDto> consultarImagenes(List<String> imagenIds) {
+        ImagenDto[] imagenes = restTemplate.getForObject(
+                messageSource.getMessage(MICRO_IMAGENES_URI, null, null),
+                ImagenDto[].class,
+                imagenIds);
+
+        Map<String, ImagenDto> imagenesAlmacenadas = new TreeMap<>();
+
+        for (ImagenDto imagenActual : imagenes) {
+            imagenesAlmacenadas.put(imagenActual.getId(), imagenActual);
+        }
+        return imagenesAlmacenadas;
     }
 
     public Map<String, ImagenDto> consultarImagenes() {

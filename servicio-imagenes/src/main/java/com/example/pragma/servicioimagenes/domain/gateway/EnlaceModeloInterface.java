@@ -10,4 +10,6 @@ public interface EnlaceModeloInterface {
     Imagen actualizarImagen(String identificacion, Imagen imagen);
     List<Imagen> listarImagenes();
     void eliminarImagen(String identificador);
+
+    List<Imagen> consultarImagenes(List<String> identificaciones);
 }

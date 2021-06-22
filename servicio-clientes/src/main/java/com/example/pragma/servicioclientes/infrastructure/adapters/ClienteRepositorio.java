@@ -13,7 +13,9 @@ import com.example.pragma.servicioclientes.infrastructure.adapters.mysql.Cliente
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -83,17 +85,7 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
     @Override
     public List<Cliente> listarClientes() {
         List<ClienteEntidad> clientes = clienteMysql.findAll();
-        List<Cliente> clientesModelo = mapeador.aModelos(clientes);
-
-        for (Cliente clienteActual: clientesModelo) {
-            Imagen foto = clienteActual.getFoto();
-            if(foto != null && foto.getId() != null && !foto.getId().isEmpty()){
-                ImagenDto imagenBD = imagenesAdapter.consultarImagen(clienteActual.getFoto().getId());
-                Imagen imagen = mapeadorImagenes.AModelo(imagenBD);
-                clienteActual.setFoto(imagen);
-            }
-        }
-        return clientesModelo;
+        return actualizarImagenesModelo(clientes);
     }
 
     @Override
@@ -112,18 +104,15 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
     @Override
     public List<Cliente> listarClientesPorEdad(Integer edad) {
         List<ClienteEntidad> clientes =  clienteMysql.findByEdadGreaterThanEqual(edad);
+        List<String> identificadoresImagenes =  new ArrayList<>();
 
-        List<Cliente> clientesModelo = mapeador.aModelos(clientes);
-
-        for (Cliente clienteActual: clientesModelo) {
-            Imagen foto = clienteActual.getFoto();
-            if(foto != null && foto.getId() != null && !foto.getId().isEmpty()){
-                ImagenDto imagenBD = imagenesAdapter.consultarImagen(clienteActual.getFoto().getId());
-                Imagen imagen = mapeadorImagenes.AModelo(imagenBD);
-                clienteActual.setFoto(imagen);
-            }
+        for (ClienteEntidad clienteActual: clientes) {
+            identificadoresImagenes.add(clienteActual.getIdFoto());
         }
-        return clientesModelo;
+
+        Map<String, ImagenDto>  list = imagenesAdapter.consultarImagenes(identificadoresImagenes);
+
+        return actualizarImagenesModelo(clientes);
     }
 
     private Imagen actualizarImagen(String id, String contenido){
@@ -133,5 +122,18 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
                 .build();
         imagenesAdapter.actualizarImagen(mapeadorImagenes.ADto(imagenActualizada));
         return imagenActualizada;
+    }
+
+    private List<Cliente> actualizarImagenesModelo(List<ClienteEntidad> clientesEndidad){
+        List<Cliente> clientesModelo = mapeador.aModelos(clientesEndidad);
+        for (Cliente clienteActual: clientesModelo) {
+            Imagen foto = clienteActual.getFoto();
+            if(foto != null && foto.getId() != null && !foto.getId().isEmpty()){
+                ImagenDto imagenBD = imagenesAdapter.consultarImagen(clienteActual.getFoto().getId());
+                Imagen imagen = mapeadorImagenes.AModelo(imagenBD);
+                clienteActual.setFoto(imagen);
+            }
+        }
+        return clientesModelo;
     }
 }

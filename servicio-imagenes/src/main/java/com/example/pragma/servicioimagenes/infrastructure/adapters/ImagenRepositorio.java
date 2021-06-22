@@ -6,6 +6,7 @@ import com.example.pragma.servicioimagenes.domain.model.Imagen;
 import com.example.pragma.servicioimagenes.infrastructure.adapters.mongo.ImagenMongoDB;
 import com.example.pragma.servicioimagenes.infrastructure.adapters.mongo.ImagenPersistenteMongo;
 import com.example.pragma.servicioimagenes.infrastructure.exceptions.NotFountException;
+import com.google.common.collect.ImmutableList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -56,5 +57,11 @@ public class ImagenRepositorio implements EnlaceModeloInterface {
         }else {
             imagenMongoDB.delete(imagenExistente.get());
         }
+    }
+
+    @Override
+    public List<Imagen> consultarImagenes(List<String> identificaciones) {
+        List<ImagenPersistenteMongo> imagenesDb = ImmutableList.copyOf(imagenMongoDB.findAllById(identificaciones));
+        return mapeador.aModelos(imagenesDb);
     }
 }

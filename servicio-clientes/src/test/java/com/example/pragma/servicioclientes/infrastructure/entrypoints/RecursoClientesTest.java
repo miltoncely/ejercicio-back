@@ -17,11 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 
 import static com.example.pragma.servicioclientes.infrastructure.helpers.DatosTest.*;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 //@WebMvcTest(RecursoClientes.class)
@@ -117,8 +115,8 @@ class RecursoClientesTest {
 
                 //then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*", hasSize(3)))
-                .andDo(print());
+                .andExpect(jsonPath("$.*", hasSize(3)));
+                //.andDo(print());
     }
 
     @Test

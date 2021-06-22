@@ -6,6 +6,7 @@ import com.example.pragma.servicioimagenes.domain.model.Imagen;
 import com.example.pragma.servicioimagenes.domain.usecase.GestionarImagenesInterface;
 import com.example.pragma.servicioimagenes.infrastructure.entrypoints.dtos.ImagenPeticion;
 import com.example.pragma.servicioimagenes.infrastructure.entrypoints.dtos.ImagenRespuesta;
+import com.example.pragma.servicioimagenes.infrastructure.entrypoints.dtos.IdentificadorImagenesList;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,6 +58,23 @@ public class RecursoImagenes {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(imagenRespuesta);
+    }
+
+    @ApiOperation("consultar imagenes por los identificadores")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "ok"),
+            @ApiResponse(code = 404, message = "la imagen no fue encontrada")
+    })
+    @GetMapping("/filter")
+    public ResponseEntity<List<ImagenRespuesta>> consultarImagenes(
+            @RequestBody IdentificadorImagenesList identificadores){
+        List<Imagen> imagenesEncontradas = gestionarImagenes.consultarImagenes(identificadores.getIdentificadores());
+        List<ImagenRespuesta> imagenesRespuesta = mapeadorRespuesta.aRespuestas(imagenesEncontradas);
+
+        if(imagenesEncontradas == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(imagenesRespuesta);
     }
 
     @ApiOperation("Lista todas las imagenes registradas")

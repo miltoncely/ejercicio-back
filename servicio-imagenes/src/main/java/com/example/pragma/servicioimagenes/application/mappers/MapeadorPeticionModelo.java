@@ -2,7 +2,6 @@ package com.example.pragma.servicioimagenes.application.mappers;
 
 import com.example.pragma.servicioimagenes.domain.model.Imagen;
 import com.example.pragma.servicioimagenes.infrastructure.entrypoints.dtos.ImagenPeticion;
-import com.example.pragma.servicioimagenes.infrastructure.entrypoints.dtos.ImagenRespuesta;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

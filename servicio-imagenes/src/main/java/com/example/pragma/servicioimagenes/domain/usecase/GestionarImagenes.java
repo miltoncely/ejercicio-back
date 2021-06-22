@@ -25,6 +25,11 @@ public class GestionarImagenes implements GestionarImagenesInterface{
     }
 
     @Override
+    public List<Imagen> consultarImagenes(List<String> identificaciones) {
+        return imagenRepositorio.consultarImagenes(identificaciones);
+    }
+
+    @Override
     public Imagen actualizarContenido(String identificacion, Imagen imagen) {
         return imagenRepositorio.actualizarImagen(identificacion,imagen);
     }
