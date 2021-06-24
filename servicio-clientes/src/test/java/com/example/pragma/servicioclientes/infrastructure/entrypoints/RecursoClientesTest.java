@@ -20,6 +20,7 @@ import static com.example.pragma.servicioclientes.infrastructure.helpers.DatosTe
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 //@WebMvcTest(RecursoClientes.class)
@@ -63,6 +64,7 @@ class RecursoClientesTest {
                 .andExpect(jsonPath("$.nombres").value("Milton Cely"))
                 .andExpect(jsonPath("$.apellidos").value("Cely Carrascal"))
                 .andExpect(jsonPath("$.ciudadDeNacimiento").value("Cucuta"));
+                //.andDo(print());
         verify(gestionarClientes).consultarCliente("CC", "1000000000");
     }
 

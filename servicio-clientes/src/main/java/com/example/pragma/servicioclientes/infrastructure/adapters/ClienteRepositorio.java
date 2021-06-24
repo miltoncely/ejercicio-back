@@ -30,7 +30,7 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
     @Override
     public Cliente guardarCliente(Cliente cliente) {
         Imagen imagen = cliente.getFoto();
-        if(imagen!= null &&  !imagen.getContenido().isEmpty()){
+        if(imagen!= null && imagen.getContenido() != null && !imagen.getContenido().isEmpty()){
             ImagenDto nuevaImagen = ImagenDto.builder()
                     .id(cliente.getTipoDeDocumento().concat(cliente.getNumeroDeIdentificacion()))
                     .contenido(cliente.getFoto().getContenido())
