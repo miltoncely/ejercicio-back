@@ -1,6 +1,8 @@
 package com.example.pragma.servicioclientes.infrastructure.adapters.imagenes;
 
+import com.netflix.discovery.DiscoveryClient;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -67,7 +69,9 @@ public class ImagenesAdapter {
     }
 
     public void eliminarImagen(String imagenId) {
-        restTemplate.delete(messageSource.getMessage(MICRO_IMAGENES_URI, null, null) + imagenId);
+        if(imagenId != null && !imagenId.isEmpty()){
+            restTemplate.delete(messageSource.getMessage(MICRO_IMAGENES_URI, null, null) + imagenId);
+        }
     }
 
 }

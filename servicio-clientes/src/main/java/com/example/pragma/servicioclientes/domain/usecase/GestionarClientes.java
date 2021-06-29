@@ -10,7 +10,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class GestionarClientes implements GestionarClientesInterface{
 
     private final EnlaceModeloInterface clienteRepositorio;
@@ -21,7 +20,6 @@ public class GestionarClientes implements GestionarClientesInterface{
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Cliente consultarCliente(String tipoDocumento, String numeroIdentificacion) {
         return clienteRepositorio.consultarCliente(tipoDocumento,numeroIdentificacion);
     }
@@ -32,7 +30,6 @@ public class GestionarClientes implements GestionarClientesInterface{
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Cliente> listarClientes() {
         return clienteRepositorio.listarClientes();
     }
@@ -43,7 +40,6 @@ public class GestionarClientes implements GestionarClientesInterface{
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Cliente> listarClientesPorEdad(Integer edad) {
         return clienteRepositorio.listarClientesPorEdad(edad);
     }

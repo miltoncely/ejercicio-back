@@ -95,10 +95,8 @@ public class ClienteRepositorio implements EnlaceModeloInterface {
                 .numeroDeIdentificacion(numeroIdentificacion)
                 .build();
         Optional<ClienteEntidad> clienteExistente = clienteMysql.findById(idCliente);
-        if(clienteExistente.isPresent()){
-            imagenesAdapter.eliminarImagen(clienteExistente.get().getIdFoto());
-            clienteMysql.delete(clienteExistente.get());
-        }
+        imagenesAdapter.eliminarImagen(clienteExistente.get().getIdFoto());
+        clienteMysql.delete(clienteExistente.get());
     }
 
     @Override
